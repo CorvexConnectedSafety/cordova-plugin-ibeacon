@@ -45,9 +45,9 @@
     self.locationManager.delegate = self;
     
     
-    if (IsAtLeastiOSVersion(@"9.0")) {
+    /* if (IsAtLeastiOSVersion(@"9.0")) {
         self.locationManager.allowsBackgroundLocationUpdates = YES;
-    }
+    }*/
 }
 
 - (void) initPeripheralManager {
