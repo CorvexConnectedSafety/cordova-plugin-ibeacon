@@ -24,21 +24,22 @@
 
 #### Features available on both Android and iOS
 
- * Ranging
- * Monitoring
+* Ranging
+* Monitoring
+* Advertising device as an iBeacon
 
 #### Features exclusive to iOS
 
- * Region Monitoring (or geo fencing), works in all app states. 
- * Advertising device as an iBeacon
+* Region Monitoring (or geo fencing), works in all app states. 
 
 #### Features exclusive to Android
- * ARMA filter for distance calculations
- * Disable request for bluetooth permissions
+
+* ARMA filter for distance calculations
+* Disable request for bluetooth permissions
 
 ### Installation
 
-```
+```bash
 cordova plugin add https://github.com/petermetz/cordova-plugin-ibeacon.git
 ```
 
@@ -62,13 +63,12 @@ In order to use Advertising (e.g ```startAdvertising```), the iOS-Capability "Lo
 
 #### Standard [CLLocationManager](https://developer.apple.com/library/ios/documentation/CoreLocation/Reference/CLLocationManager_Class/CLLocationManager/CLLocationManager.html) functions
 
-
 ##### Creating BeaconRegion DTOs
 
-```
+```javascript
 /**
  * Function that creates a BeaconRegion data transfer object.
- * 
+ *
  * @throws Error if the BeaconRegion parameters are not valid.
  */
 function createBeacon() {
@@ -80,28 +80,29 @@ function createBeacon() {
 
     // throws an error if the parameters are not valid
     var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(identifier, uuid, major, minor);
-   
-    return beaconRegion;   
-} 
-```
- 
-##### Start monitoring a single iBeacon
-```
-var logToDom = function (message) {
-	var e = document.createElement('label');
-	e.innerText = message;
 
-	var br = document.createElement('br');
-	var br2 = document.createElement('br');
-	document.body.appendChild(e);
-	document.body.appendChild(br);
-	document.body.appendChild(br2);
-	
-	window.scrollTo(0, window.document.height);
+    return beaconRegion;
+}
+```
+
+##### Start monitoring a single iBeacon
+
+```javascript
+var logToDom = function (message) {
+  var e = document.createElement('label');
+  e.innerText = message;
+
+  var br = document.createElement('br');
+  var br2 = document.createElement('br');
+  document.body.appendChild(e);
+  document.body.appendChild(br);
+  document.body.appendChild(br2);
+
+  window.scrollTo(0, window.document.height);
 };
 
 var delegate = new cordova.plugins.locationManager.Delegate();
-	
+
 delegate.didDetermineStateForRegion = function (pluginResult) {
 
     logToDom('[DOM] didDetermineStateForRegion: ' + JSON.stringify(pluginResult));
@@ -133,14 +134,14 @@ cordova.plugins.locationManager.requestWhenInUseAuthorization();
 // or cordova.plugins.locationManager.requestAlwaysAuthorization()
 
 cordova.plugins.locationManager.startMonitoringForRegion(beaconRegion)
-	.fail(function(e) { console.error(e); })
-	.done();
+  .fail(function(e) { console.error(e); })
+  .done();
 
 ```
- 
 
 ##### Stop monitoring a single iBeacon
-```
+
+```javascript
 var uuid = '00000000-0000-0000-0000-000000000000';
 var identifier = 'beaconOnTheMacBooksShelf';
 var minor = 1000;
@@ -148,29 +149,29 @@ var major = 5;
 var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(identifier, uuid, major, minor);
 
 cordova.plugins.locationManager.stopMonitoringForRegion(beaconRegion)
-	.fail(function(e) { console.error(e); })
-	.done();
+  .fail(function(e) { console.error(e); })
+  .done();
 
 ```
- 
- 
+
 ##### Start ranging a single iBeacon
-```
-var logToDom = function (message) {
-	var e = document.createElement('label');
-	e.innerText = message;
 
-	var br = document.createElement('br');
-	var br2 = document.createElement('br');
-	document.body.appendChild(e);
-	document.body.appendChild(br);
-	document.body.appendChild(br2);
-	
-	window.scrollTo(0, window.document.height);
+```javascript
+var logToDom = function (message) {
+  var e = document.createElement('label');
+  e.innerText = message;
+
+  var br = document.createElement('br');
+  var br2 = document.createElement('br');
+  document.body.appendChild(e);
+  document.body.appendChild(br);
+  document.body.appendChild(br2);
+
+  window.scrollTo(0, window.document.height);
 };
 
 var delegate = new cordova.plugins.locationManager.Delegate();
-	
+
 delegate.didDetermineStateForRegion = function (pluginResult) {
 
     logToDom('[DOM] didDetermineStateForRegion: ' + JSON.stringify(pluginResult));
@@ -208,7 +209,8 @@ cordova.plugins.locationManager.startRangingBeaconsInRegion(beaconRegion)
 ```
  
 ##### Stop ranging a single iBeacon
-```
+
+```javascript
 var uuid = '00000000-0000-0000-0000-000000000000';
 var identifier = 'beaconOnTheMacBooksShelf';
 var minor = 1000;
@@ -216,14 +218,14 @@ var major = 5;
 var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(identifier, uuid, major, minor);
 
 cordova.plugins.locationManager.stopRangingBeaconsInRegion(beaconRegion)
-	.fail(function(e) { console.error(e); })
-	.done();
+  .fail(function(e) { console.error(e); })
+  .done();
 
 ```
 
-##### Determine if advertising is supported (iOS is supported, Android is not yet)
+##### Determine if advertising is supported
 
-```
+```javascript
 cordova.plugins.locationManager.isAdvertisingAvailable()
     .then(function(isSupported){
         console.log("isSupported: " + isSupported);
@@ -233,9 +235,9 @@ cordova.plugins.locationManager.isAdvertisingAvailable()
 
 ```
 
-##### Determine if advertising is currently turned on (iOS only)
+##### Determine if advertising is currently turned on
 
-```        
+```javascript
 cordova.plugins.locationManager.isAdvertising()
     .then(function(isAdvertising){
         console.log("isAdvertising: " + isAdvertising);
@@ -245,8 +247,24 @@ cordova.plugins.locationManager.isAdvertising()
 
 ```
 
-##### Start advertising device as an iBeacon (iOS only)
-```
+##### Start advertising device as an iBeacon
+
+It is possible to specify the measured signal strength at 1 meter.  If this parameter is omitted, a default
+value is used.  On Android devices, this value is '-55'.
+
+NOTE: On Android devices it is also possible to specify the frequency of advertisements
+and the advertisement power.  See https://developer.android.com/reference/android/bluetooth/le/AdvertiseSettings
+for details.
+
+`startAdvertising(region [, measuredPower [, frequency [, txPower]]])`
+
+The value for measuredPower must be between 0 and -100.
+
+The value for frequency must be 0 for LOW_POWER, 1 for BALANCED, or 2 for LOW_LATENCY.
+
+The value for txPower must be 0 for ULTRA_LOW, 1 for LOW, 2 for MEDIUM, or 3 for HIGH power.
+
+```javascript
 var uuid = '00000000-0000-0000-0000-000000000000';
 var identifier = 'advertisedBeacon';
 var minor = 2000;
@@ -286,8 +304,9 @@ cordova.plugins.locationManager.isAdvertisingAvailable()
 
 ```
 
-##### Stopping the advertising (iOS only)
-```
+##### Stopping the advertising
+
+```javascript
 cordova.plugins.locationManager.stopAdvertising()
     .fail(function(e) { console.error(e); })
     .done();
@@ -296,7 +315,7 @@ cordova.plugins.locationManager.stopAdvertising()
 
 ##### Enable/Disable BlueTooth (Android only)
 
-```        
+```javascript
 cordova.plugins.locationManager.isBluetoothEnabled()
     .then(function(isEnabled){
         console.log("isEnabled: " + isEnabled);
@@ -321,7 +340,7 @@ var minor = undefined;
 var beaconRegion = new cordova.plugins.locationManager.BeaconRegion(identifier, uuid, major, minor);
 
 var logToDom = function (message) {
-	console.warn(message);
+  console.warn(message);
 };
 
 var delegate = new cordova.plugins.locationManager.Delegate();
@@ -347,8 +366,8 @@ delegate.didRangeBeaconsInRegion = function (pluginResult) {
 cordova.plugins.locationManager.setDelegate(delegate);
 
 cordova.plugins.locationManager.startMonitoringForRegion(beaconRegion)
-	.fail(function(e) { console.error(e); })
-	.done();
+  .fail(function(e) { console.error(e); })
+  .done();
 
 ```
 
@@ -359,10 +378,10 @@ The underlying library uses the moving average to calculate distance by default,
 ```<preference name="com.unarin.cordova.beacon.android.altbeacon.EnableArmaFilter" value="true" />```
 
 #### Disable request for bluetooth permission
+
 By default, this library requests the user for bluetooth permissions when the app starts. If you would like to request permission in a different way or at a different time, set the following preference in your `config.xml` file.
 
 ```<preference name="com.unarin.cordova.beacon.android.altbeacon.RequestBtPermission" value="false" />```
-
 
 ## Contributions
 
@@ -386,18 +405,19 @@ This project uses [commitlint](https://github.com/conventional-changelog/commitl
 ### How to execute the tests - OS X
 
 #### Prerequisites Of The Test Runner
+
 * [Dart SDK](http://dartlang.org) installed on the path (Tested with: 1.2, 1.3, 1.3.3)
 * [NodeJS](http://nodejs.org/)
 * [NPM](https://www.npmjs.org/)
 * [Cordova NPM package](https://www.npmjs.org/package/cordova) (Tested with: 3.4.0-0.1.3)
 * [XCode](https://developer.apple.com/xcode/) (Tested with 5.0.2 and 6.0)
 
-
-```
+```bash
 dart test/run_tests.dart
 ```
 
 Executing the test runner will do the following:
+
 * Generates a Cordova project
 * Add the iOS platform
 * Installs the iBeacon plugin from the local file-system.
