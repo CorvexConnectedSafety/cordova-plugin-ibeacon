@@ -1202,6 +1202,8 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
 
         // optinal second member in JSONArray is just a number 
         final int measuredPower = args.length() > 1 ? args.getInt(1) : -55;
+        final int frequency = args.length() > 2 ? args.getInt(2) : -1;
+        final int txpower = args.length() > 3 ? args.getInt(3) : -1;
 
         if (major == null && minor != null)
             throw new UnsupportedOperationException("Unsupported combination of 'major' and 'minor' parameters.");
@@ -1235,6 +1237,17 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
                 debugLog("Advertisement start STEP BeaconTransmitter ");
                 final BeaconTransmitter beaconTransmitter = LocationManager.this.createOrGetBeaconTransmitter();
 
+                
+                if (frequency != null) {
+                  // there was a frequency parameter
+                  debugLog("Advertisement mode set to " + String.valueOf(frequency));
+                  beaconTransmitter.setAdvertiseMode( frequency );
+                }
+                if (txpower != null) {
+                  // there was a power parameter
+                  debugLog("Advertisement power set to " + String.valueOf(txpower));
+                  beaconTransmitter.setTxPowerLevel( txpower );
+                }
                 debugLog("[DEBUG] BeaconTransmitter: "+beaconTransmitter);
                 beaconTransmitter.startAdvertising(beacon, new AdvertiseCallback() {
 
