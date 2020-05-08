@@ -256,11 +256,15 @@ NOTE: On Android devices it is also possible to specify the frequency of adverti
 and the advertisement power.  See https://developer.android.com/reference/android/bluetooth/le/AdvertiseSettings
 for details.
 
-`startAdvertising(region [, measuredPower [, frequency [, txPower]]])`
+`startAdvertising(region [, measuredPower ])`
 
 The value for measuredPower must be between 0 and -100.
 
+`setAdvertiseMode( frequency )`
+
 The value for frequency must be 0 for LOW_POWER, 1 for BALANCED, or 2 for LOW_LATENCY.
+
+`setAvertiseTxPowerLevel( txPower )`
 
 The value for txPower must be 0 for ULTRA_LOW, 1 for LOW, 2 for MEDIUM, or 3 for HIGH power.
 
