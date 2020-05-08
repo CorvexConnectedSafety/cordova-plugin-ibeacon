@@ -447,16 +447,30 @@ LocationManager.prototype.isMonitoringAvailableForClass = function(region) {
  * by the operating system.
  * @param {Integer} measuredPower: Optional parameter, if left empty, the device will
  * use it's own default value.
+ * @param {Integer} frequency: Optional parameter, if left empty, the device will
+ * use it's own default value.
+ * @param {Integer} txStrength: Optional parameter, if left empty, the device will
+ * use it's own default value.
  *
  * @return {Q.Promise} Returns a promise which is resolved as soon as the
  * native layer acknowledged the dispatch of the advertising request.
  */
-LocationManager.prototype.startAdvertising = function(region, measuredPower) {
+LocationManager.prototype.startAdvertising = function(region, measuredPower, frequency, txStrength) {
 	Regions.checkRegionType(region);
-	if (measuredPower)
-		return this._promisedExec('startAdvertising', [region, measuredPower], []);
-	else
-		return this._promisedExec('startAdvertising', [region], []);
+  if (measuredPower || frequency || txStrength) {
+    if (measuredPower && (measuredPower > 0 || measuredPower < -100)) {
+      measuredPower = -55;
+    }
+    if (frequency != null && (frequency < 0 || frequency > 2)) {
+      frequency = null;
+    }
+    if (txStrength != null && (txStrength < 0 || txStrength > 3)) {
+      txStrength = null;
+    }
+		return this._promisedExec('startAdvertising', [region, measuredPower, frequency, txStrength], []);
+  } else {
+    return this._promisedExec('startAdvertising', [region], []);
+  }
 };
 
 /**
