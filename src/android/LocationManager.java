@@ -1238,15 +1238,15 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
                 final BeaconTransmitter beaconTransmitter = LocationManager.this.createOrGetBeaconTransmitter();
 
                 
-                if (frequency != null) {
+                if (frequency != -1) {
                   // there was a frequency parameter
                   debugLog("Advertisement mode set to " + String.valueOf(frequency));
                   beaconTransmitter.setAdvertiseMode( frequency );
                 }
-                if (txpower != null) {
+                if (txpower != -1) {
                   // there was a power parameter
                   debugLog("Advertisement power set to " + String.valueOf(txpower));
-                  beaconTransmitter.setTxPowerLevel( txpower );
+                  beaconTransmitter.setAdvertiseTxPowerLevel( txpower );
                 }
                 debugLog("[DEBUG] BeaconTransmitter: "+beaconTransmitter);
                 beaconTransmitter.startAdvertising(beacon, new AdvertiseCallback() {
