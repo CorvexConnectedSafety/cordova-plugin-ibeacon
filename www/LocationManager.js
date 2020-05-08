@@ -435,6 +435,36 @@ LocationManager.prototype.isMonitoringAvailableForClass = function(region) {
 };
 
 /**
+ * Set the advertising mode (Android only)
+ *
+ * Set the speed at which advertising is done.  Legal values are 0 (once per second),
+ * 1 (4 times per second) and 2 (10 times per second)
+ *
+ * @param {Integer} frequency
+ *
+ * @return {Q.Promise} Returns a promise which is resolved as soon as the
+ * native layer acknowledged the frequency is set
+ */
+LocationManager.prototype.setAdvertiseMode = function(frequency) {
+  return this._promisedExec('setAdvertiseMode', [frequency], []);
+};
+
+/**
+ * Set the advertising power (Android only)
+ *
+ * Set the power at which advertising is done.  Legal values are 0 (ultra low),
+ * 1 (low), 2 (medium), and 3 (high)
+ *
+ * @param {Integer} power
+ *
+ * @return {Q.Promise} Returns a promise which is resolved as soon as the
+ * native layer acknowledged the power is set
+ */
+LocationManager.prototype.setAdvertiseTxPowerLevel = function(power) {
+  return this._promisedExec('setAdvertiseTxPowerLevel', [power], []);
+};
+
+/**
  * Start advertising the specified region.
  *
  * If a region a different identifier is already being advertised for
@@ -455,19 +485,13 @@ LocationManager.prototype.isMonitoringAvailableForClass = function(region) {
  * @return {Q.Promise} Returns a promise which is resolved as soon as the
  * native layer acknowledged the dispatch of the advertising request.
  */
-LocationManager.prototype.startAdvertising = function(region, measuredPower, frequency, txStrength) {
+LocationManager.prototype.startAdvertising = function(region, measuredPower) {
 	Regions.checkRegionType(region);
-  if (measuredPower || frequency || txStrength) {
+  if (measuredPower) {
     if (measuredPower && (measuredPower > 0 || measuredPower < -100)) {
       measuredPower = -55;
     }
-    if (frequency != null && (frequency < 0 || frequency > 2)) {
-      frequency = null;
-    }
-    if (txStrength != null && (txStrength < 0 || txStrength > 3)) {
-      txStrength = null;
-    }
-		return this._promisedExec('startAdvertising', [region, measuredPower, frequency, txStrength], []);
+		return this._promisedExec('startAdvertising', [region, measuredPower], []);
   } else {
     return this._promisedExec('startAdvertising', [region], []);
   }

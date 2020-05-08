@@ -241,6 +241,10 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
             isAdvertisingAvailable(callbackContext);
         } else if (action.equals("isAdvertising")) {
             isAdvertising(callbackContext);
+        } else if (action.equals("setAdvertiseMode")) {
+            setAdvertiseMode(args.optInteger(0), callbackContext);
+        } else if (action.equals("setAdvertiseTxPowerLevel")) {
+            setAdvertiseTxPowerLevel(args.optInteger(0), callbackContext);
         } else if (action.equals("startAdvertising")) {
             startAdvertising(args, callbackContext);
         } else if (action.equals("stopAdvertising")) {
@@ -1174,6 +1178,44 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
 
     }
 
+    private void setAdvertiseMode(final int frequency, CallbackContext callbackContext) {
+        _handleCallSafely(callbackContext, new ILocationManagerCommand() {
+            @Override
+            public PluginResult run() {
+                debugLog("Setting advertisement mode");
+
+                debugLog("Advertisement start STEP BeaconTransmitter ");
+                final BeaconTransmitter beaconTransmitter = LocationManager.this.createOrGetBeaconTransmitter();
+                  // there was a frequency parameter
+                  debugLog("Advertisement mode set to " + String.valueOf(frequency));
+                  beaconTransmitter.setAdvertiseMode( frequency );
+                }
+
+                final PluginResult result = new PluginResult(PluginResult.Status.OK, true);
+                result.setKeepCallback(true);
+                return result;
+        });
+    }
+
+    private void setAdvertiseTxPowerLevel(final int power, CallbackContext callbackContext) {
+        _handleCallSafely(callbackContext, new ILocationManagerCommand() {
+            @Override
+            public PluginResult run() {
+                debugLog("Setting advertisement power");
+
+                debugLog("Advertisement start STEP BeaconTransmitter ");
+                final BeaconTransmitter beaconTransmitter = LocationManager.this.createOrGetBeaconTransmitter();
+                  // there was a frequency parameter
+                  debugLog("Advertisement power set to " + String.valueOf(power));
+                  beaconTransmitter.setAdvertiseTxPowerLevel( power );
+                }
+
+                final PluginResult result = new PluginResult(PluginResult.Status.OK, true);
+                result.setKeepCallback(true);
+                return result;
+        });
+    }
+
     private void startAdvertising(final JSONArray args, CallbackContext callbackContext) throws JSONException {
         debugLog("Advertisement start START BEACON ");
         debugLog(args.toString(4));
@@ -1202,8 +1244,6 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
 
         // optinal second member in JSONArray is just a number 
         final int measuredPower = args.length() > 1 ? args.getInt(1) : -55;
-        final int frequency = args.length() > 2 ? args.getInt(2) : -1;
-        final int txpower = args.length() > 3 ? args.getInt(3) : -1;
 
         if (major == null && minor != null)
             throw new UnsupportedOperationException("Unsupported combination of 'major' and 'minor' parameters.");
@@ -1237,17 +1277,6 @@ public class LocationManager extends CordovaPlugin implements BeaconConsumer {
                 debugLog("Advertisement start STEP BeaconTransmitter ");
                 final BeaconTransmitter beaconTransmitter = LocationManager.this.createOrGetBeaconTransmitter();
 
-                
-                if (frequency != -1) {
-                  // there was a frequency parameter
-                  debugLog("Advertisement mode set to " + String.valueOf(frequency));
-                  beaconTransmitter.setAdvertiseMode( frequency );
-                }
-                if (txpower != -1) {
-                  // there was a power parameter
-                  debugLog("Advertisement power set to " + String.valueOf(txpower));
-                  beaconTransmitter.setAdvertiseTxPowerLevel( txpower );
-                }
                 debugLog("[DEBUG] BeaconTransmitter: "+beaconTransmitter);
                 beaconTransmitter.startAdvertising(beacon, new AdvertiseCallback() {
 
